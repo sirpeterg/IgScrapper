@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# user added 
+
+Analyze_DB.ipynb
+Database_img
+Database_img_lite
+geckodriver.log
+
