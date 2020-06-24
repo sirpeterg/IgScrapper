@@ -1,5 +1,8 @@
 import datetime
 import sqlite3
+import sys
+sys.path.append('Users/Peterg/Documents/Python/Instabot')
+sys.path.append('Users/Peterg/Documents/Python/IG_data')
 import re
 
 def create_photographer_db_entry(connection, cursor):
@@ -63,7 +66,7 @@ def removeIfAlreadyInDatabase(post_links, cursor):
         except: # element of post_link does not exist in database -> leave in post_links
             pass
     post_links_entries_after_removal =  len(post_links)
-    print('Original number of identified posts: ', post_links_entries_before_removal, ' and after ' \
+    print('|    Original number of identified posts: ', post_links_entries_before_removal, ' and after ' \
          'removing duplicates: ', post_links_entries_after_removal)
     return post_links
 
@@ -94,7 +97,7 @@ def getDBStatus(connection, cursor):
     numDbEntries = len(results)
     numImgNotDownloaded = getNumberNotDownloaded(connection, cursor)
     numImgMetadataNotDownloaded = getNumberMetadataNotDownloaded(connection, cursor)
-    print('Number of picture urls: ', numDbEntries, '\n'
-            'Number of pictures where Metadata is not downloaded: ', numImgMetadataNotDownloaded, '\n'
-            'Number of pictures not downloaded: ', numImgNotDownloaded)
+    print('|    Number of picture urls: ', numDbEntries, '\n'
+            '|    Number of pictures where Metadata is not downloaded: ', numImgMetadataNotDownloaded, '\n'
+            '|    Number of pictures not downloaded: ', numImgNotDownloaded)
     return numDbEntries, numImgMetadataNotDownloaded, numImgNotDownloaded
