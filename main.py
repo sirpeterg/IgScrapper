@@ -115,8 +115,9 @@ def main():
         # if enough post_urls are in DB, then take the post_urls from the DB
         post_urls, photographer_names = get_list_of_post_urls(cursor)
         post_url, photographer_name = decidewhichposturl(post_urls, photographer_names)  # picking a random url
-        post_url = 'https://www.instagram.com/p/CASggd8hZY-/'
-        photographer_name = 'ninjarod'
+        #post_url = 'https://www.instagram.com/p/CAnp1P3D7D3/'
+        #photographer_name = 'nathanielwise'
+
         print('|    random url: ', post_url, 'photographer: ', photographer_name)
         print("__")
         print("")
@@ -192,7 +193,7 @@ def main():
             # remove the entry from database
             print("|    is video?: ", post.is_video)
             print('|    removing db entry since post is video')
-            IGDBactions.removeIfAlreadyInDatabase(post_url, cursor)
+            cursor.execute("DELETE FROM photo WHERE photo_url = (?);", (post_url,))
         print("__")
         print("")
         ####################
@@ -368,11 +369,12 @@ def Remove_trailing_mulitimages(shortcode, photographer_name, home_path):
         if os.path.isfile(os.path.join(path, i)) and shortcode in i:
             files.append(i)
     #print("these are the logged files: ", files)
-    os.rename(path + '/' + files[0], path + '/' + shortcode + '.jpg')  # rename the first image to its shortcode name.
-    # This is neutral for normal, non-multiimages, does not effectively change its name
-    if len(files) >= 2: # multiimage
-        for i in range(1, len(files)):
-            os.remove(path +'/'+ files[i]) # delete all but the first multiimage
+    if files:
+        os.rename(path + '/' + files[0], path + '/' + shortcode + '.jpg')  # rename the first image to its shortcode name.
+        # This is neutral for normal, non-multiimages, does not effectively change its name
+        if len(files) >= 2: # multiimage
+            for i in range(1, len(files)):
+                os.remove(path + '/' + files[i]) # delete all but the first multiimage
 
 def is_jpg_in_DB(home_path, photographer_name, shortcode):
     path = home_path + '/Database_img/' + photographer_name
@@ -396,6 +398,7 @@ def pause(size):
 
     print('|    Pausing for: ', round(pauselength / 60.0, 1), ' minutes')
     time.sleep(pauselength)
+
 
 
 if __name__ == '__main__': main()
