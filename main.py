@@ -48,9 +48,9 @@ class WebDriver:
 def main():
     home_path = '/Users/Peterg/code/IgScrapper'
     picture_save_flag = False
-    max_runtime_minutes = 454
+    max_runtime_minutes = 654
     start_scrapping = datetime.datetime.now()
-    driverchoice = ['Chrome', 'Firefox'][1]
+    driverchoice = ['Chrome', 'Firefox'][0]
     if driverchoice == 'Chrome':
         webdriver_path = home_path +'/chromedriver' # chrome driver
         browser = 'Chrome'
@@ -115,8 +115,8 @@ def main():
         # if enough post_urls are in DB, then take the post_urls from the DB
         post_urls, photographer_names = get_list_of_post_urls(cursor)
         post_url, photographer_name = decidewhichposturl(post_urls, photographer_names)  # picking a random url
-        #post_url = 'https://www.instagram.com/p/CAnp1P3D7D3/'
-        #photographer_name = 'nathanielwise'
+        #post_url = 'https://www.instagram.com/p/B6rG-Mehtlf/'
+        #photographer_name = 'francescobutano'
 
         print('|    random url: ', post_url, 'photographer: ', photographer_name)
         print("__")
@@ -193,18 +193,18 @@ def main():
             # remove the entry from database
             print("|    is video?: ", post.is_video)
             print('|    removing db entry since post is video')
-            cursor.execute("DELETE FROM photo WHERE photo_url = (?);", (post_url,))
+            remove_url_from_DB(connection, cursor, post_url)
         print("__")
         print("")
+
         ####################
         # do pause
-
         print("_____ MODULE 3__________")
         print("Ending Cycle")
         print("_____ MODULE 3__________")
         print("|")
         print("|    Current time:", datetime.datetime.now())
-        pause('XL')
+        pause('L')
         if random() < 0.12:
             pause('L')
         print("_")
@@ -291,13 +291,15 @@ def get_post_url_to_DB(driver, n, connection, cursor, home_path):
     random_no = randint(0, total_names - 1)
     print('|    Total users in txt file: ', total_names)
     user_tocheck = allusers[random_no].replace('/', '')
-    user_tocheck = user_tocheck[:-1] # getting rid of the trailing 'ENTER'
+    #user_tocheck = user_tocheck[:-1] # getting rid of the trailing 'ENTER'
+    user_tocheck = user_tocheck.rstrip()  # getting rid of the trailing 'ENTER'
     print('|    picking entry number : ', random_no, ' User name: ', user_tocheck)
     url = "https://www.instagram.com/" + user_tocheck + "/"
     driver.get(url)
     post = 'https://www.instagram.com/p/'
     post_links = []
     number_ignored_duplicates = 0
+    scroll_counter = 0
     while len(post_links) < n:
         links = [a.get_attribute('href') for a in driver.find_elements_by_tag_name('a')]
         for link in links:
@@ -314,12 +316,16 @@ def get_post_url_to_DB(driver, n, connection, cursor, home_path):
             else:
                 number_ignored_duplicates = number_ignored_duplicates + 1
                 #print('number_ignored_duplicates: ', number_ignored_duplicates)
+        if scroll_counter >= 8:
+            time.sleep(607) # wait a bit
+            driver.refresh() # press the page reload button (login screen might be there)
         if n > 12 or number_ignored_duplicates > 6:
             scroll_down = "window.scrollTo(0, document.body.scrollHeight);"
             driver.execute_script(scroll_down)
-            pause('M')
+            scroll_counter = scroll_counter + 1
+            pause('S')
 
-        pause('L')
+        pause('S')
     if len(post_links) > n: # crop to desired length
         post_links = post_links[0:n]
     # Duplicates should have not been added. As extra safety, I remove potential duplicates (redundant, can probably be removed)
@@ -390,7 +396,7 @@ def pause(size):
     elif size == 'M':
         pauselength = 50.7 * (random() + 0.1) # between 5 sec and 1 min
     elif size == 'L':
-        pauselength = 141.3 * (random() + 0.1) # between 0.5 and 2.84 min
+        pauselength = 1.4 * 151.3 * (random() + 0.25) # between 1.4 *( 37 sec and 3.15 min)
     elif size == 'XL':
          pauselength = 141.3 * (random() + 0.21) + 272 # between 5.02 and 7.38 min
     elif size == 'XXL':
@@ -399,6 +405,9 @@ def pause(size):
     print('|    Pausing for: ', round(pauselength / 60.0, 1), ' minutes')
     time.sleep(pauselength)
 
+def remove_url_from_DB(connection, cursor, post_url):
+    cursor.execute("DELETE FROM photo WHERE photo_url = (?);", (post_url,))
+    connection.commit()
 
 
 if __name__ == '__main__': main()
