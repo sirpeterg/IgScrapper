@@ -83,7 +83,7 @@ def main():
         IGDBactions.create_photo_db_entry(connection, cursor)
 
         # check if there are entries
-        minimum_num_links_for_scrapping = 10
+        minimum_num_links_for_scrapping = 12
         enough_picture_links_available = False
         print("|    DATABASE STATUS - before")
         numDbEntries, \
@@ -137,6 +137,7 @@ def main():
                                     save_metadata = False,
                                     download_comments = False,
                                     post_metadata_txt_pattern = '')
+        print('Debugging: photographer_name variable: ', photographer_name)
         profile = Profile.from_username(L.context, photographer_name)
         post = Post.from_shortcode(L.context, shortcode)
         try:
@@ -287,20 +288,28 @@ def get_post_url_to_DB(driver, n, connection, cursor, home_path):
     with open(home_path + '/UserList.txt', 'r') as opened_file:
         allusers = opened_file.readlines()
     total_names = len(allusers)
-    # will throw the dice which user to pick
-    random_no = randint(0, total_names - 1)
+    # IF CODE GETS STUCK ON PROFILE WHERE ALMOST ALL PICS HAVE BEEN ALREADY DOWNLOADED,
+    # A NEW USER SHOULD BE PICKED. TO THIS END, CREATE A LIST OF 10 USERS, TO ALLOW
+    # THE WHILE LOOP BELOW TO TAKE A NEW USER IN CASE IT IS STUCK AT A USER WITH NO NEW POSTS
     print('|    Total users in txt file: ', total_names)
-    user_tocheck = allusers[random_no].replace('/', '')
-    #user_tocheck = user_tocheck[:-1] # getting rid of the trailing 'ENTER'
-    user_tocheck = user_tocheck.rstrip()  # getting rid of the trailing 'ENTER'
-    print('|    picking entry number : ', random_no, ' User name: ', user_tocheck)
-    url = "https://www.instagram.com/" + user_tocheck + "/"
-    driver.get(url)
-    post = 'https://www.instagram.com/p/'
+    user_tocheck = []
+    for i in range(0, 9):
+        # will throw the dice which user to pick
+        random_no = randint(0, total_names - 1)
+        random_username = allusers[random_no].replace('/', '')
+        random_username = random_username.rstrip()
+        user_tocheck.append(random_username)
     post_links = []
     number_ignored_duplicates = 0
     scroll_counter = 0
+    url = "https://www.instagram.com/" + user_tocheck[0] + "/"
+    driver.get(url)
     while len(post_links) < n:
+        ind = 0
+        if scroll_counter >= 11:
+            ind = ind + 1
+            url = "https://www.instagram.com/" + user_tocheck[ind] + "/"
+            driver.get(url)
         links = [a.get_attribute('href') for a in driver.find_elements_by_tag_name('a')]
         for link in links:
             # check if link is already in database:
@@ -311,21 +320,19 @@ def get_post_url_to_DB(driver, n, connection, cursor, home_path):
             else:
                 is_duplicate = False
             if not is_duplicate: # the link is not in the DB already
+                post = 'https://www.instagram.com/p/'
                 if post in link and link not in post_links: # is valid link and has not been added to the list in this loop
                     post_links.append(link)
             else:
                 number_ignored_duplicates = number_ignored_duplicates + 1
                 #print('number_ignored_duplicates: ', number_ignored_duplicates)
-        if scroll_counter >= 8:
-            time.sleep(607) # wait a bit
-            driver.refresh() # press the page reload button (login screen might be there)
         if n > 12 or number_ignored_duplicates > 6:
             scroll_down = "window.scrollTo(0, document.body.scrollHeight);"
             driver.execute_script(scroll_down)
             scroll_counter = scroll_counter + 1
-            pause('S')
+            pause('XS')
 
-        pause('S')
+        pause('XS')
     if len(post_links) > n: # crop to desired length
         post_links = post_links[0:n]
     # Duplicates should have not been added. As extra safety, I remove potential duplicates (redundant, can probably be removed)
@@ -333,9 +340,9 @@ def get_post_url_to_DB(driver, n, connection, cursor, home_path):
     for post in post_links:
         post_name = post.split('/')[-2]
         IGDBactions.insertPhotoInDB(connection, cursor, post_name, post,
-                                   None, None, None, None, None, user_tocheck, None,
+                                   None, None, None, None, None, user_tocheck[ind], None,
                                    None)  # only ID and post and photographername
-    return post_links, user_tocheck
+    return post_links, user_tocheck[ind]
 
 
 def decidewhichposturl(post_urls, photographer_names):
@@ -396,7 +403,7 @@ def pause(size):
     elif size == 'M':
         pauselength = 50.7 * (random() + 0.1) # between 5 sec and 1 min
     elif size == 'L':
-        pauselength = 1.4 * 151.3 * (random() + 0.25) # between 1.4 *( 37 sec and 3.15 min)
+        pauselength = 1.6 * 151.3 * (random() + 0.25) # between 1.6 *( 37 sec and 3.15 min)
     elif size == 'XL':
          pauselength = 141.3 * (random() + 0.21) + 272 # between 5.02 and 7.38 min
     elif size == 'XXL':
