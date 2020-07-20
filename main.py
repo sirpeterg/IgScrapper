@@ -499,6 +499,7 @@ class ScrappApp:
             print("| Database status before")
             with Database(self.databasePath) as db:
                 db.printStatus()
+            print("saving Post: ", userpost.getPostUrl(), " (Username: ", userpost.getUsername(),")")
             #userpost = Userpost(self.homePath, 'https://www.instagram.com/p/CAqQ0QsAZZW/', 'danielkordan')
             saveSuccesful = userpost.downloadPic()
             print("|    Saving succesful: ", saveSuccesful)
@@ -508,7 +509,7 @@ class ScrappApp:
                 with Database(self.databasePath) as db:
                     db.writePictureSavedFlag(userpost)
                 userpost.removeTrailingMulitimages()
-                userpost.confirmPresenceOfJpg()
+                JPEGpresent = userpost.confirmPresenceOfJpg()
             #pause("S")
             print("__")
             print("")
@@ -517,7 +518,7 @@ class ScrappApp:
             print("VISIT RANDOM PHOTO URL (scrap metadata)")
             print("_____ MODULE 2.2__________")
             print("|")
-            if saveSuccesful:
+            if saveSuccesful and JPEGpresent:
                 userpost.downloadMetadata()
                 with Database(self.databasePath) as db:
                     db.writeMetadataToDb(userpost)
@@ -531,7 +532,9 @@ class ScrappApp:
             print("|    Current time:", datetime.datetime.now())
             print("__")
             print("")
-            pause('S')
+            pause('L')
+            if random() < 0.12:
+                pause('L')
 
 
         print("DONE")
@@ -540,7 +543,7 @@ class ScrappApp:
 
 
 homePath = '/Users/Peterg/code/IgScrapper'
-databaseFolder = homePath + '/Database_img_OODTEST/'
+databaseFolder = homePath + '/Database_img/'
 databasePath = databaseFolder + 'IGdata.db'
 UserListPath = homePath + '/UserList.txt'
 scrapper = ScrappApp(homePath, databasePath, databaseFolder, UserListPath)
