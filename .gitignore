@@ -134,4 +134,12 @@ Analyze_DB.ipynb
 Database_img
 Database_img_lite
 geckodriver.log
+*.jpg
+*.jpeg
+*.db
+convertTextToNumberDatabase.py
+Database_testzone.py
+PlotDownloadFrequency.ipynb
+Untitled.ipynb
+
 
