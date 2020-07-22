@@ -141,4 +141,6 @@ geckodriver.log
 *.jpeg
 *.jpg
 *.db
-
+Database_testzone.py
+Untitled.ipynb
+convertTextToNumberDatabase.py
