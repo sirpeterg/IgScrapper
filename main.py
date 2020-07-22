@@ -187,7 +187,6 @@ class Database:
             self.cursor.execute("SELECT photo_id FROM photo WHERE photo_url = ? ", (userpost.getPostUrl(),))
             photo_id = self.cursor.fetchall()[0][0]
             self.cursor.execute("UPDATE photo SET is_downloaded = ? WHERE photo_id = ?;", ('True', photo_id))
-            #print("|    Updated the saving event to the database")
 
     def identifyIfUrlIsInDatabase(self, postUrl):
         """Checks if this post is already in the database by comparing its URL to all URLs saved in the database"""
