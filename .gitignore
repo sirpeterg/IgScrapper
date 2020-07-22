@@ -144,3 +144,5 @@ geckodriver.log
 Database_testzone.py
 Untitled.ipynb
 convertTextToNumberDatabase.py
+chromedriver
+geckodriver
