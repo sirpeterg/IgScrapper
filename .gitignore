@@ -130,8 +130,15 @@ dmypy.json
 
 # user added 
 
+IGactions.py
+IGDBactions.py
+PlotDownloadFrequency.ipynb
 Analyze_DB.ipynb
 Database_img
-Database_img_lite
+Database_img_BACKUP_OODCHANGE
+Database_img_TESTINGGROUND
 geckodriver.log
+*.jpeg
+*.jpg
+*.db
 
