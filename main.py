@@ -44,7 +44,7 @@ def pause(size):
 
 class RandomDriver(webdriver.Firefox, webdriver.Chrome):
     """Randomly picks a Firefox or Chrome, is designed to be used in a context manager"""
-    def __init__(self):
+    def __init__(self, homePath):
         # randomly picking a different webdriver, trying to avoid anti-crawler detection by Instagram
         driverchoice = ['Chrome', 'Firefox'][randint(0, 1)]
         if driverchoice == 'Chrome':
@@ -220,7 +220,7 @@ class Userprofile:
     def visitProfile(self):
         """Creates a webdriver and visits the url of the instagram user"""
         print("|    Scrapping posts to database from user: ", self.userName)
-        self.driver = RandomDriver()
+        self.driver = RandomDriver(self.homePath)
         self.driver.get(self.userUrl)
 
     def closeDriver(self):
@@ -576,10 +576,12 @@ class ScrappApp:
             print("|    Current time:", datetime.datetime.now())
             print("__")
             print("")
-            pause('L')
+            pause('M')
             if random() < 0.12:
                 pause('L')
         print("DONE")
+
+
 
 
 
