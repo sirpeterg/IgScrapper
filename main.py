@@ -485,8 +485,8 @@ class ScrappApp:
                         print("|    scrolling")
                         userprofile.scroll()
                         self.scrapUniquePostsToDb(userprofile)
+            userprofile.closeDriver()
         print("|    sufficient posts")
-        self.closeDriver()
         with Database(self.databasePath) as db:
             MetadataNonDownloadedPosts = db.getMetadataNonDownloadedPosts()
         return MetadataNonDownloadedPosts
@@ -576,7 +576,7 @@ class ScrappApp:
             print("|    Current time:", datetime.datetime.now())
             print("__")
             print("")
-            pause('M')
+            pause('L')
             if random() < 0.12:
                 pause('L')
         print("DONE")
