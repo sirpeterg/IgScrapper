@@ -141,5 +141,6 @@ convertTextToNumberDatabase.py
 Database_testzone.py
 PlotDownloadFrequency.ipynb
 Untitled.ipynb
-
+geckodriver
+chromedriver
 
