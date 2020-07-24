@@ -44,7 +44,7 @@ def pause(size):
 
 class RandomDriver(webdriver.Firefox, webdriver.Chrome):
     """Randomly picks a Firefox or Chrome, is designed to be used in a context manager"""
-    def __init__(self):
+    def __init__(self, homePath):
         # randomly picking a different webdriver, trying to avoid anti-crawler detection by Instagram
         driverchoice = ['Chrome', 'Firefox'][randint(0, 1)]
         if driverchoice == 'Chrome':
@@ -221,7 +221,7 @@ class Userprofile:
     def visitProfile(self):
         """Creates a webdriver and visits the url of the instagram user"""
         print("|    Scrapping posts to database from user: ", self.userName)
-        self.driver = RandomDriver()
+        self.driver = RandomDriver(self.homePath)
         self.driver.get(self.userUrl)
 
     def closeDriver(self):
@@ -382,9 +382,12 @@ class Userpost:
         except:
             metadata['IG_category'] = ''
         hashtags_original = post.caption_hashtags  # reformating into one string with '#' in front
+        if not hashtags_original:
+            hashtags_original = self.scanCommentsForHashtags(data_post)
         hashtags = []
-        for tags in hashtags_original:
-            hashtags.append('#' + tags)
+        if hashtags_original:
+            for tags in hashtags_original:
+                hashtags.append('#' + tags)
         hashtags_str = str(hashtags).replace(",", "").replace("'", "").replace("[", "").replace("]", "")
         metadata['hashtags'] = hashtags_str
         metadata['photographer_name'] = data_post['owner']['username']
@@ -395,6 +398,14 @@ class Userpost:
         self.metadata = metadata
         print('|    Metadata was scrapped')
         return metadata
+
+    def scanCommentsForHashtags(self, data_post):
+        for comment in data_post['edge_media_to_parent_comment']['edges']:
+            commentByOwner = comment['node']['owner']['username'] == self.metadata['photographer_name']
+            if commentByOwner:
+                commentText = comment['node']['text']
+                hashtagsComments = [word[1:] for word in commentText.split() if word.startswith('#')] # the hashtag sigh is added back, later
+                return hashtagsComments
 
     def getUsername(self):
         """Returns Instagram user name of the photographer from this post"""
@@ -486,8 +497,9 @@ class ScrappApp:
                         print("|    scrolling")
                         userprofile.scroll()
                         self.scrapUniquePostsToDb(userprofile)
+            #userprofile.closeDriver() # I currently do not understand why this does not work
         print("|    sufficient posts")
-        self.closeDriver()
+
         with Database(self.databasePath) as db:
             MetadataNonDownloadedPosts = db.getMetadataNonDownloadedPosts()
         return MetadataNonDownloadedPosts
@@ -541,7 +553,7 @@ class ScrappApp:
             with Database(self.databasePath) as db:
                 db.printStatus()
             #userpost = Userpost(self.homePath, 'https://www.instagram.com/p/CAqQ0QsAZZW/', 'danielkordan')
-            #userpost = Userpost(self.homePath, self.databaseFolder, 'https://www.instagram.com/p/CCa9o7LJb6Y/', 'akulka174')
+            #userpost = Userpost(self.homePath, self.databaseFolder, 'https://www.instagram.com/p/B-t0E76hpRP/', 'trentblomfield')
             print("|    saving Post: ", userpost.getPostUrl(), " (Username: ", userpost.getUsername(), ")")
             saveSuccesful = userpost.downloadPic()
             if saveSuccesful:
