@@ -130,19 +130,17 @@ dmypy.json
 
 # user added 
 
-IGactions.py
-IGDBactions.py
-PlotDownloadFrequency.ipynb
 Analyze_DB.ipynb
 Database_img
-Database_img_BACKUP_OODCHANGE
-Database_img_TESTINGGROUND
+Database_img_lite
 geckodriver.log
-*.jpeg
 *.jpg
+*.jpeg
 *.db
-Database_testzone.py
-Untitled.ipynb
 convertTextToNumberDatabase.py
-chromedriver
+Database_testzone.py
+PlotDownloadFrequency.ipynb
+Untitled.ipynb
 geckodriver
+chromedriver
+
