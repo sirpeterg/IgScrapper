@@ -127,7 +127,7 @@ class Database:
         default_manual_rating = 'False'
         newId = self.__createDatabaseId()
         with self.connection:
-            self.cursor.execute("INSERT OR REPLACE INTO photo VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            self.cursor.execute("INSERT OR REPLACE INTO photo VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (newId,
                 str(userpost.metadata['photo_name']),
                 str(userpost.metadata['photo_url']),
@@ -141,7 +141,7 @@ class Database:
                 str(userpost.metadata['following']),
                 str(default_confirmedLandscapeShot),
                 str(default_isDownloaded),
-                 str(default_manual_rating)
+                str(default_manual_rating)
                 ))
 
     def __createDatabaseId(self):
@@ -596,9 +596,9 @@ class ScrappApp:
             print("|    Current time:", datetime.datetime.now())
             print("__")
             print("")
-            pause('M')
-            if random() < 0.12:
-                pause('L')
+            pause('S')
+            #if random() < 0.12:
+            #    pause('L')
         print("DONE")
 
 
