@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title class=title >Instagram image classifier</title>
+        <div class = nav>
+            <form class=nav_buttons method="POST">
+                <input type="submit" name="nav_button" value="browser" >
+                <input type="submit" name="nav_button" value="classifier" >   
+            </form>
+        </div>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style226.css') }}">
+        <style>
+            table, th, td {
+              table-layout: fixed ;
+              border: 1px solid black;
+              border-collapse: collapse;
+              width:50%; 
+              margin-left: auto; 
+              margin-right: auto; 
+              border-collapse: collapse;
+            }
+            td {
+              width: 7% ;
+            }
+            </style>
+    </head>
+    <body>
+        <h1> Instagram image classifier</h1>
+        <header>Browser</header>
+        <section class = Image>
+            <img class realimage src="{{ user_image }}" alt = "description" height = 350px   > 
+        </section>
+        <section class = buttons>
+            <form class=buttons2 method="POST">
+                <div class="form-group">
+                  <label></label>
+                  <input type="submit" id="back" name="nav_button" value='<' formmethod="post">
+                </div>
+                <div class="form-group">
+                  <label></label>
+                  <input type="int" class="id_index" id="index" name="index" placeholder="index" value = {{index}}>
+                </div>
+                <div class="form-group">
+                  <label></label>
+                  <input type="submit" id="forward" name="nav_button" value=">" formmethod="post">
+                </div>
+              </form>        
+        </section>
+        <table class = DB >
+            <tr>
+              <th>index</th>
+              <th>photographer</th>
+              <th>followers</th>
+              <th>following</th>
+              <th>likes</th>
+              <th>manual classification</th>
+              <th>manual rating</th>
+            </tr>
+            <tr>
+              <th>{{ photoData.photo_id }}</th>
+              <th>{{ photoData.photographer_name }}</th>
+              <th>{{ photoData.followers }}</th>
+              <th>{{ photoData.following }}</th>
+              <th> {{ photoData.likes }}</th>
+              <th>{{ photoData.manually_confirmed }}</th>
+              <th> {{ photoData.manual_rating }}</th>
+            </tr>
+          </table>
+        <script src="{{url_for('static', filename='main22.js')}}"></script> 
+    </body>
+</html>
