@@ -97,7 +97,8 @@ class Database:
                         followers TEXT,
                         following TEXT,
                         manually_confirmed TEXT,
-                        is_downloaded TEXT 
+                        is_downloaded TEXT,
+                        manual_rating TEXT 
                         )""")
 
     def writeMetadataToDb(self, userpost):
@@ -123,9 +124,10 @@ class Database:
         """inserts new post to database at the end of the database (with url and photographer name being non-empty)"""
         default_confirmedLandscapeShot = 'False'
         default_isDownloaded = 'False'
+        default_manual_rating = 'False'
         newId = self.__createDatabaseId()
         with self.connection:
-            self.cursor.execute("INSERT OR REPLACE INTO photo VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            self.cursor.execute("INSERT OR REPLACE INTO photo VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 (newId,
                 str(userpost.metadata['photo_name']),
                 str(userpost.metadata['photo_url']),
@@ -138,7 +140,8 @@ class Database:
                 str(userpost.metadata['followers']),
                 str(userpost.metadata['following']),
                 str(default_confirmedLandscapeShot),
-                str(default_isDownloaded)
+                str(default_isDownloaded),
+                str(default_manual_rating)
                 ))
 
     def __createDatabaseId(self):
@@ -187,7 +190,6 @@ class Database:
             self.cursor.execute("SELECT photo_id FROM photo WHERE photo_url = ? ", (userpost.getPostUrl(),))
             photo_id = self.cursor.fetchall()[0][0]
             self.cursor.execute("UPDATE photo SET is_downloaded = ? WHERE photo_id = ?;", ('True', photo_id))
-            #print("|    Updated the saving event to the database")
 
     def identifyIfUrlIsInDatabase(self, postUrl):
         """Checks if this post is already in the database by comparing its URL to all URLs saved in the database"""
@@ -295,6 +297,7 @@ class Userpost:
             'following': '',
             'manually_confirmed': '',
             'is_downloaded': '',
+            'manual_rating': '',
                         }
 
     def __startInstaloaderInstance(self):
@@ -314,8 +317,11 @@ class Userpost:
                                     download_video_thumbnails=False,
                                     compress_json = False,
                                     save_metadata = False,
+                                    download_geotags=False,
                                     download_comments = False,
                                     post_metadata_txt_pattern = '')
+        # Optionally, login or load session
+        #L.login("", "")  # (login)
         return L
 
     def downloadPic(self):
@@ -454,6 +460,7 @@ class ScrappApp:
         self.minimumNumUrlsPresent = 9 # if less than this number of database entries are present that
         # are not scrapped for metadata and the jpg, the script feeds the database with fresh,
         # non-scrapped post entries
+        self.minimumBeingScrapped = 8
 
     def scrapUniquePostsToDb(self, userprofile):
         """Requires a webdriver that is at the homepage of an Instagram user
@@ -481,19 +488,19 @@ class ScrappApp:
         Start again, with a different user until enough fresh posts are present"""
         with Database(self.databasePath) as db:
             NumberNonDownloadedPosts = db.getNumberNonDownloadedPosts()
-        while NumberNonDownloadedPosts < self.minimumNumUrlsPresent: # are there enough posts to download?
+        while NumberNonDownloadedPosts < self.minimumNumUrlsPresent + self.minimumBeingScrapped: # are there enough posts to download?
             userprofile = Userprofile(self.homePath, self.databasePath, self.UserListPath)
             userprofile.visitProfile()
             time.sleep(3)
             self.scrapUniquePostsToDb(userprofile)
             with Database(self.databasePath) as db:
                 NumberNonDownloadedPosts = db.getNumberNonDownloadedPosts()
-            if NumberNonDownloadedPosts < self.minimumNumUrlsPresent: # are there enough posts to download?
+            if NumberNonDownloadedPosts < self.minimumNumUrlsPresent + self.minimumBeingScrapped: # are there enough posts to download?
                 randomScrollNumber = randint(1, 8)
                 for i in range(randomScrollNumber):
                     with Database(self.databasePath) as db:
                         NumberNonDownloadedPosts = db.getNumberNonDownloadedPosts()
-                    if NumberNonDownloadedPosts < self.minimumNumUrlsPresent: # are there enough posts to download?
+                    if NumberNonDownloadedPosts < self.minimumNumUrlsPresent + self.minimumBeingScrapped: # are there enough posts to download?
                         print("|    scrolling")
                         userprofile.scroll()
                         self.scrapUniquePostsToDb(userprofile)
@@ -589,10 +596,12 @@ class ScrappApp:
             print("|    Current time:", datetime.datetime.now())
             print("__")
             print("")
-            pause('L')
-            if random() < 0.12:
-                pause('L')
+            pause('S')
+            #if random() < 0.12:
+            #    pause('L')
         print("DONE")
+
+
 
 
 

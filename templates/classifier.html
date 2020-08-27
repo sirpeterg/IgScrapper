@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title class=title >Instagram image classifier</title>
+        <div class = nav>
+            <form class=nav_buttons method="POST">
+                <input type="submit" name="nav_button" value="browser" >
+                <input type="submit" name="nav_button" value="classifier" >
+            </form>
+        </div>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <style>
+          table, th, td {
+            table-layout: fixed ;
+            border: 1px solid black;
+            border-collapse: collapse;
+            width:50%; 
+            margin-left: auto; 
+            margin-right: auto; 
+            border-collapse: collapse;
+          }
+          td {
+            width: 7% ;
+          }
+          </style>
+      </head>
+    <body>
+        <h1> Instagram image classifier</h1>
+        <header>Landscape photo or not?</header>
+        <section class = Image>
+            <img class realimage src="{{ user_image }}" alt = "description" height = 350px   > 
+        </section>
+        <div class = buttons>
+            <form class=buttons2 method="POST">
+                <div class="form-group">
+                  <label></label>
+                  <input type="submit" id="back" name="nav_button" value='<' formmethod="post">
+                </div>
+                <div class="form-group">
+                  <label></label>
+                  <input type="int" class="id_index" id="index" name="index" placeholder="index" value = {{index}}>
+                </div>
+                <div class="form-group">
+                  <label></label>
+                  <input type="submit" id="forward" name="nav_button" value=">" formmethod="post">
+                </div>
+              </form>        
+            </div>
+        <div class = buttons>
+            <form method="POST">
+                <input class = "buttonsClasssifier" type="submit" name="submit_button" id="NoLandscape" value="NoLandscape" formmethod="post">
+                <input class = "buttonsClasssifier" type="submit" name="submit_button" id="Landscape" value="Landscape" formmethod="post">
+                <input class = "buttonsClasssifier" type="submit" name="submit_button" id="Exciting" value="Exciting" formmethod="post" style="display: none;">
+                <input class = "buttonsClasssifier" type="submit" name="submit_button" id="NonExciting" value="NonExciting" formmethod="post" style="display: none;">
+            </form>
+          </div>
+        <div>
+            <div id="rcorners1"  >
+                <style>
+                    #rcorners1 {
+                        width: 200px; 
+                        z-index: 1; 
+                        position: relative;
+                        display:block;
+                        border-radius: 12px;
+                        background: rgb(50, 50, 50);
+                        padding: 5px;
+                        height: 10px;
+                        margin-left: auto;
+                        margin-right: auto;
+                        opacity: 0.8;
+                        filter: drop-shadow(0 0 0.2rem rgb(56, 52, 80));
+                    }
+                </style>
+              <div id="rcorners2" data-value={{widthConfirmed}}>
+                <style>
+                #rcorners2 {
+                    width: var(--widthConfirmed);
+                    z-index: 2; 
+                    position: absolute; 
+                    top: 3px; 
+                    left: 5px;
+                    display:block;
+                    border-top-left-radius: 12px;
+                    border-bottom-left-radius: 12px;
+                    border-top-right-radius: 2px;
+                    border-bottom-right-radius: 2px;
+                    background: rgb(188, 65, 35);
+                    padding: 3px;
+                    height: 7px;
+                    margin-left: auto;
+                    margin-right: auto;
+                  }
+                </style>
+              </div>
+              <div id="rcorners3" data-value={{widthRejected}}>
+                <style>
+                      #rcorners3 {
+                        width: var(--widthRejected);
+                        z-index: 3; 
+                        position: absolute; 
+                        top: 3px; 
+                        left: 5px;
+                        display:block;
+                        border-top-left-radius: 12px;
+                        border-bottom-left-radius: 12px;
+                        border-top-right-radius: 2px;
+                        border-bottom-right-radius: 2px;
+                        background: rgb(96, 73, 197);
+                        padding: 3px;
+                        height: 7px;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+                </style>
+              </div>
+             </div>
+          </div>
+          <div class=textstats> total:{{totalDb}} <span style="color: rgb(96, 73, 197)">rejected:{{rejected}}</span> <span style="color: rgb(188, 65, 35)">accepted: {{confirmed}}</span> </div>
+        
+          <table class = DB >
+            <tr>
+              <th>index</th>
+              <th>photographer</th>
+              <th>followers</th>
+              <th>following</th>
+              <th>likes</th>
+              <th>manual classification</th>
+              <th>manual rating</th>
+            </tr>
+            <tr>
+              <th>{{ photoData.photo_id }}</th>
+              <th>{{ photoData.photographer_name }}</th>
+              <th>{{ photoData.followers }}</th>
+              <th>{{ photoData.following }}</th>
+              <th> {{ photoData.likes }}</th>
+              <th>{{ photoData.manually_confirmed }}</th>
+              <th> {{ photoData.manual_rating }}</th>
+            </tr>
+          </table>
+        <script src="{{url_for('static', filename='main.js')}}"></script>
+    </body>
+</html>
