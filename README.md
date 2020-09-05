@@ -2,11 +2,19 @@
 
 version 0.3
 
-An Instagram scrapper, intended to generate trainingdata for downstream Machine Learning and Deep Learning applications. 
+An Instagram scrapper, intended to generate training-data for downstream Machine Learning and Deep Learning applications. 
 
 Downloads jpgs as well as metadata of this post.
 
+Note: I use this tool to scrap a particular picture style (Landscape photography). This is done by selecting the users in UserList.txt accordingly. 
 
+# Components: 
+                  *Picture/Metadata scrapper: main.py, 
+                  *Image Viewer/Tool to manually classify into  [Landscape / NoLandscape], 
+
+
+----------------------------
+#Picture/Metadata scrapper: 
 # Input: 
     
     UserList.txt: a text file with usernames of Instagram profiles.
@@ -22,7 +30,7 @@ Downloads jpgs as well as metadata of this post.
  get a geckodriver and a chromedriver into your repo folder  
  set your repo folder as homePath (in main.py)  
  create a database folder in your repo folder, and match it with the databaseFolder in main.py  
- create a UserList.txt in the repo folder (see format-information above)  
+ create a UserList.txt in the repo folder (see format-information above) 
  run main.py: This will start a scrap run:   
  
         ##################################
@@ -56,7 +64,7 @@ To adjust length of scrap run, change maxRuntime instance variable of the Scrapp
                   *"photographer_name" Instagram username, 
                   *"followers" number of followers of Instagram user, 
                   *"following" number of users that this Instagram user is following, 
-                  *"manually_confirmed" auxillary collumn to be used to manually clean the dataset, 
+                  *"manually_confirmed" auxiliary column to be used to manually clean the dataset, 
                   *"is_downloaded" "True", if jpg has been saved, "False" if post still needs to be scrapped
      2. jpgs of the users in UserList.txt. They will be placed in folders named by : username
      
@@ -70,6 +78,27 @@ To adjust length of scrap run, change maxRuntime instance variable of the Scrapp
       os
       current version requires geckodriver and chromedriver in repo folder
   
+----------------------------
+#Image Viewer/ Classifier Tool:
+
+A flask server reads images and metadata. This is sent to a HTML frontend.
+
+start server.py to launch the Viewer/Classifier Tool.
+
+The browser route lets you view images.
+The classifier route lets you view images, plus lets you choose two features: 
+manual classification: [Landscape / NoLandscape] 
+manual rating: [Exciting / NonExciting]
+
+\includegraphics[]{classifier.png}
+
+
+NAVIGATION:
+
+left / right arrow key: choose prior / next image
+up / down arrow key: choose Landscape /  NoLandscape
+1 / 2 key: choose Exciting / NonExciting
+
 
 
  
