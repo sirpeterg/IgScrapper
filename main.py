@@ -48,10 +48,10 @@ class RandomDriver(webdriver.Firefox, webdriver.Chrome):
         # randomly picking a different webdriver, trying to avoid anti-crawler detection by Instagram
         driverchoice = ['Chrome', 'Firefox'][randint(0, 1)]
         if driverchoice == 'Chrome':
-            webdriverPath = homePath + '/chromedriver'  # chrome driver
+            webdriverPath = os.path.join(homePath, 'chromedriver')  # chrome driver
             self.driver = webdriver.Chrome.__init__(self, executable_path=webdriverPath)
         elif driverchoice == 'Firefox':
-            webdriverPath = homePath + '/geckodriver'  # chrome driver
+            webdriverPath = os.path.join(homePath, 'geckodriver')  # chrome driver
             self.driver = webdriver.Firefox.__init__(self, executable_path=webdriverPath)
 
     def __exit__(self):
@@ -559,8 +559,6 @@ class ScrappApp:
             print("| Database status before")
             with Database(self.databasePath) as db:
                 db.printStatus()
-            #userpost = Userpost(self.homePath, 'https://www.instagram.com/p/CAqQ0QsAZZW/', 'danielkordan')
-            #userpost = Userpost(self.homePath, self.databaseFolder, 'https://www.instagram.com/p/B-t0E76hpRP/', 'trentblomfield')
             print("|    saving Post: ", userpost.getPostUrl(), " (Username: ", userpost.getUsername(), ")")
             saveSuccesful = userpost.downloadPic()
             if saveSuccesful:
@@ -607,9 +605,9 @@ class ScrappApp:
 
 def main():
     homePath = '/Users/Peterg/code/IgScrapper'
-    databaseFolder = homePath + '/Database_img/'
-    databasePath = databaseFolder + 'IGdata.db'
-    UserListPath = homePath + '/UserList.txt'
+    databaseFolder = os.path.join(homePath,'/Database_img/')
+    databasePath = os.path.join(databaseFolder, 'IGdata.db')
+    UserListPath = os.path.join(homePath, '/UserList.txt')
     # UserList.txt has the instagram profiles to scrap:
     # format:
     #/username1/\n/username2/\n/username3/ etc (\n represents newline)
