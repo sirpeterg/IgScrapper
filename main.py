@@ -559,8 +559,6 @@ class ScrappApp:
             print("| Database status before")
             with Database(self.databasePath) as db:
                 db.printStatus()
-            #userpost = Userpost(self.homePath, 'https://www.instagram.com/p/CAqQ0QsAZZW/', 'danielkordan')
-            #userpost = Userpost(self.homePath, self.databaseFolder, 'https://www.instagram.com/p/B-t0E76hpRP/', 'trentblomfield')
             print("|    saving Post: ", userpost.getPostUrl(), " (Username: ", userpost.getUsername(), ")")
             saveSuccesful = userpost.downloadPic()
             if saveSuccesful:
