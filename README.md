@@ -96,7 +96,7 @@ The classifier route lets you view images, plus lets you choose two features:
 manual classification: [Landscape / NoLandscape] 
 manual rating: [Exciting / NonExciting]
 
-![ScreenShot](classifier.png)
+![ScreenShot](screenshots/classifier.png)
 
 
 # NAVIGATION:
