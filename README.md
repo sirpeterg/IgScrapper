@@ -12,7 +12,7 @@ This is done by the "Image Viewer/Tool".
 
 # Components: 
 *  **Picture/Metadata scrapper: main.py**
-* **Image Viewer/Tool to manually classify into  [Landscape / NoLandscape]** 
+* **Image Viewer/Classifier Tool to manually classify into  [Landscape / NoLandscape]** 
 
 minor tools:
 * **checkDatabaseIntegrity.py to confirm that each image flagged as downloaded in Database has a present jpeg** 
