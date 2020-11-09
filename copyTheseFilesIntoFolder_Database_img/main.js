@@ -29,6 +29,10 @@ document.addEventListener('keyup', (event) => {
     else if (event.key == '2') {
         document.getElementById("Exciting").click();
 
+    }  
+    else if (event.key == '4') {
+        document.getElementById("goToUnclassified").click();
+
     }
     });
 

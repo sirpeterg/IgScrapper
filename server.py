@@ -26,6 +26,25 @@ def getPhotoData(homePath, databaseFolder, databasePath):
     connection.close()
     return photoData
 
+def getIndexFirstUnclassifiedDbEntry(homePath, databaseFolder, databasePath):
+    connection = sqlite3.connect(databasePath)
+    cursor = connection.cursor()
+    query1 = '''SELECT manually_confirmed FROM photo WHERE is_downloaded == "True";'''
+    cursor.execute(query1)
+    result1 = cursor.fetchall()
+    result1List = [element[0] for element in result1]
+    index1 =  result1List.index("False")
+    connection.close()
+    connection = sqlite3.connect(databasePath)
+    cursor = connection.cursor()
+    query2 = '''SELECT manual_rating FROM photo WHERE is_downloaded == "True";'''
+    cursor.execute(query2)
+    result2 = cursor.fetchall()
+    result2List = [element[0] for element in result2]
+    index2 =  result2List.index("False")
+    index = min(index1, index2) # selecting the first image that misses one of the two manual classifications
+    connection.close()
+    return index
 
 def getPhotoName(photoData, index):
         photoName = photoData[index]['photo_name'] + '.jpg' 
@@ -81,6 +100,11 @@ def navBar(photoData, databaseFolder):
                 index  = int(req['index']) + int(1)
             session['index'] = index
             photoname = getPhotoName(photoData, index)
+        elif request.form['nav_button'] == 'gotonew': # go to the first unclassified element
+            index = getIndexFirstUnclassifiedDbEntry(homePath, databaseFolder, databasePath)
+            photoname = getPhotoName(photoData, index)
+            session['index'] = index
+
     else:
         index = session['index']
         photoname = getPhotoName(photoData, index)
