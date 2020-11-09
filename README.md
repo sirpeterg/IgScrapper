@@ -14,6 +14,8 @@ This is done by the "Image Viewer/Tool".
 *  **Picture/Metadata scrapper: main.py**
 * **Image Viewer/Tool to manually classify into  [Landscape / NoLandscape]** 
 
+minor tools:
+* **checkDatabaseIntegrity.py to confirm that each image flagged as downloaded in Database has a present jpeg** 
 
 ----------------------------
 # Picture/Metadata scrapper: 
@@ -99,13 +101,19 @@ manual rating: [Exciting / NonExciting]
 ![ScreenShot](screenshots/classifier.png)
 
 
-# NAVIGATION:
+# Navigation:
+
+For both, the browser and classifier tab:
 
 **left / right arrow key:** choose prior / next image
+
+For classifier tab:
 
 **up / down arrow key:** choose Landscape /  NoLandscape
 
 **1 / 2 key:** choose Exciting / NonExciting
+
+**4 key:** go to the first image that has not been classified into [Landscape /  NoLandscape] and [Exciting / NonExciting]
 
 
 
