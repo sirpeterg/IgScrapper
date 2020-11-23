@@ -335,10 +335,7 @@ class Userpost:
         post = Post.from_shortcode(L.context, shortcode)
         if post.is_video:
             self.postIsVideo = True
-        try:
-            picture_save_flag = L.download_post(post, target='DB' + profile.username, )
-        except:
-            picture_save_flag = False
+        picture_save_flag = L.download_post(post, target='DB' + profile.username, )
         return picture_save_flag
 
     def confirmPresenceOfJpg(self):
